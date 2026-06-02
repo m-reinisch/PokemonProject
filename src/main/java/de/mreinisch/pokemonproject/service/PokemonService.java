@@ -20,7 +20,7 @@ public class PokemonService {
                 .build();
     }
 
-    /** Searches for Pokémon by name in the PokeAPI.
+    /** Shows Pokémon with the requested name.
      *
      * @param name to search for
      * @return found Pokémon
@@ -28,7 +28,7 @@ public class PokemonService {
     public Pokemon findPokeByName(String name){
         PokeApiDTO pokeApiDTO= searchPokeAPIforName(name);
         List<String> types= new ArrayList<>();
-        Pokemon pokemon= new Pokemon("1", null, null, null, null, null, null, null);
+        Pokemon pokemon= new Pokemon("1");
 
         pokeApiDTO.types()
                 .forEach(t -> types.add(t.getType().getName()));
@@ -42,6 +42,11 @@ public class PokemonService {
                 .withTypes(types);
     }
 
+    /** Searches for Pokémon by name in the PokeAPI.
+     *
+     * @param name to search for
+     * @return found Pokémon
+     */
     private PokeApiDTO searchPokeAPIforName(String name){
         return restClient.get()
                 .uri("/" + name)
