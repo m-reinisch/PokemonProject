@@ -6,9 +6,7 @@ import de.mreinisch.pokemonproject.model.Pokemon;
 import de.mreinisch.pokemonproject.repository.FavoritesRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service

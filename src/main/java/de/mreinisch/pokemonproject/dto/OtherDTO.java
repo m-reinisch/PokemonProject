@@ -1,8 +1,10 @@
 package de.mreinisch.pokemonproject.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class OtherDTO {
-    private OaDTO officialartwork; // todo: Minus-Problem lösem
+    @JsonProperty("official-artwork")
+    private OaDTO officialArtwork;
 }
