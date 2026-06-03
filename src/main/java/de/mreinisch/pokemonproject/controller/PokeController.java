@@ -5,6 +5,7 @@ import de.mreinisch.pokemonproject.model.Pokemon;
 import de.mreinisch.pokemonproject.service.CollectionService;
 import de.mreinisch.pokemonproject.service.PokemonService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,9 @@ public class PokeController {
     }
 
     @GetMapping("/pokemon/{name}")
-    public Pokemon getPokemonByName(@PathVariable String name){
+    public Pokemon getPokemonByName(@PathVariable
+                                        @Size(min= 2, message= "The PokémonName must contain at least 2 characters.")
+                                        String name){
         return pokeService.findPokeByName(name);
     }
 
