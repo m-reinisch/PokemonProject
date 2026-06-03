@@ -39,7 +39,7 @@ public class CollectionService {
                 pokeApiDTO.id(),
                 favorite.nickname(),
                 pokeApiDTO.name(),
-                null,
+                pokeApiDTO.sprites().getOther().getOfficialArtwork().getFront_default(),
                 pokeApiDTO.height(),
                 pokeApiDTO.weight(),
                 types);
