@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @Validated
@@ -33,5 +35,10 @@ public class PokeController {
     @ResponseStatus(HttpStatus.CREATED)
     public Pokemon savePokemonAsFavorite(@Valid @RequestBody FavoriteDTO favorite){
         return favoriteService.generateFavorite(favorite);
+    }
+
+    @GetMapping("/collection")
+    public List<Pokemon> getFavorites(){
+        return favoriteService.readFavorites();
     }
 }
