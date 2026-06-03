@@ -1,6 +1,7 @@
 package de.mreinisch.pokemonproject.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 import org.springframework.data.annotation.Id;
@@ -10,6 +11,7 @@ import java.util.List;
 @Document("Favorites")
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Data
 public class Pokemon{
     @Id private final String id;
     @With private String pokemonId;
