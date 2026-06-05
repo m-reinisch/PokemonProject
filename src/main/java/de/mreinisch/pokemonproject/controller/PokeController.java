@@ -41,4 +41,9 @@ public class PokeController {
     public List<Pokemon> getFavorites(){
         return favoriteService.readFavorites();
     }
+
+    @GetMapping("/collection/{id}")
+    public Pokemon getFavoriteById(@PathVariable String id){
+        return favoriteService.findFavorite(id);
+    }
 }

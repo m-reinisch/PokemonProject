@@ -36,12 +36,8 @@ public class CollectionService {
      * @param id to search for
      * @return Pokémon
      */
-    public Pokemon readFavorites(String id){
-        Pokemon pokemon= new Pokemon("1", "25", "Mein Starter", "pikachu",
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-                4, 60, "electric".lines().toList());
-
-        return pokemon;
+    public Pokemon findFavorite(String id){
+        return repo.findById(id).orElse(null);
     }
 
     /** Displays the favorite with the specified ID.
@@ -50,9 +46,7 @@ public class CollectionService {
      * @return Pokémon
      */
     public Pokemon removeFavorite(String id){
-        Pokemon pokemon= new Pokemon("1", "25", "Mein Starter", "pikachu",
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-                4, 60, "electric".lines().toList());
+        Pokemon pokemon= repo.findById(id).orElse(null);
 
         return pokemon;
     }
