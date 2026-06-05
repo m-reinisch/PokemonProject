@@ -25,18 +25,19 @@ public class PokemonService {
     public Pokemon findPokeByName(String name){
         PokeApiDTO pokeApiDTO= searchPokeAPIforName(name);
         List<String> types= new ArrayList<>();
-        Pokemon pokemon= new Pokemon("1");
 
         pokeApiDTO.types()
                 .forEach(t -> types.add(t.getType().getName()));
-        return pokemon.withPokemonId(pokeApiDTO.id())
-                .withPokemonName(pokeApiDTO.name())
-                .withPictureUrl(pokeApiDTO.sprites()
+        return new Pokemon("1",
+                pokeApiDTO.id(),
+                null,
+                pokeApiDTO.name(),
+                pokeApiDTO.sprites()
                         .getOther().getOfficialArtwork()
-                        .getFront_default())
-                .withHeight(pokeApiDTO.height())
-                .withWeight(pokeApiDTO.weight())
-                .withTypes(types);
+                        .getFront_default(),
+                pokeApiDTO.height(),
+                pokeApiDTO.weight(),
+                types);
     }
 
     /** Searches for Pokémon by name in the PokeAPI.

@@ -23,6 +23,34 @@ public class CollectionService {
         this.idService = idService;
     }
 
+    /** Displays all favorites.
+     *
+     * @return list of Pokémons
+     */
+    public List<Pokemon> readFavorites(){
+        return repo.findAll();
+    }
+
+    /** Displays the favorite with the specified ID.
+     *
+     * @param id to search for
+     * @return Pokémon
+     */
+    public Pokemon findFavorite(String id){
+        return repo.findById(id).orElse(null);
+    }
+
+    /** Displays the favorite with the specified ID.
+     *
+     * @param id to search for
+     * @return Pokémon
+     */
+    public Pokemon removeFavorite(String id){
+        Pokemon pokemon= repo.findById(id).orElse(null);
+
+        return pokemon;
+    }
+
     /** Saves the Pokémon with the specified name as a favorite.
      *
      * @param favorite to save
