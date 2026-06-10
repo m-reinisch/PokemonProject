@@ -1,6 +1,5 @@
 package de.mreinisch.pokemonproject.service;
 
-import de.mreinisch.pokemonproject.exception.IdNotFound;
 import de.mreinisch.pokemonproject.exception.NameNotFound;
 import de.mreinisch.pokemonproject.model.Pokemon;
 import org.junit.jupiter.api.Test;
