@@ -44,7 +44,7 @@ public class PokeController {
     }
 
     @GetMapping("/collection/{id}")
-    public Pokemon getFavoriteById(@PathVariable String id){
+    public Pokemon getFavoriteById(@PathVariable String id) throws IdNotFound {
         return favoriteService.findFavorite(id);
     }
 

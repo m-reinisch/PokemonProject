@@ -52,24 +52,22 @@ class CollectionServiceTest {
     }
 
     @Test
-    void findFavorite_shouldReturnNULL_whenNotFoundInDatabase() {
+    void findFavorite_shouldThrowException_whenNotFoundInDatabase() {
         FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
         IdService mockingIdService= mock(IdService.class);
         RestClient.Builder restClientBuilder= RestClient.builder();
         CollectionService service= new CollectionService(restClientBuilder, mockingRepro, mockingIdService);
         String id= "1";
-        Pokemon expected= null;
-        Pokemon actual;
 
-        when(mockingRepro.findById(id)).thenReturn(Optional.empty());
-        actual= service.findFavorite(id);
-        assertEquals(expected, actual);
+        assertThatExceptionOfType(IdNotFound.class)
+                .isThrownBy( () -> service.findFavorite(id) )
+                .withMessage("Searched Pokémon not found!");
         verify(mockingRepro, times(1)).findById(id);
         verifyNoMoreInteractions(mockingRepro);
     }
 
     @Test
-    void findFavorite_shouldReturnPokemon_whenFoundInDatabase() {
+    void findFavorite_shouldReturnPokemon_whenFoundInDatabase() throws IdNotFound {
         FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
         IdService mockingIdService= mock(IdService.class);
         RestClient.Builder restClientBuilder= RestClient.builder();
@@ -88,7 +86,7 @@ class CollectionServiceTest {
     }
 
     @Test
-    void removeFavorite_shouldReturnNULL_whenNotFoundInDatabase() throws IdNotFound {
+    void removeFavorite_shouldThrowException_whenNotFoundInDatabase() throws IdNotFound {
         FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
         IdService mockingIdService= mock(IdService.class);
         RestClient.Builder restClientBuilder= RestClient.builder();
@@ -97,7 +95,7 @@ class CollectionServiceTest {
 
         assertThatExceptionOfType(IdNotFound.class)
                 .isThrownBy( () -> service.removeFavorite(id) )
-                .withMessage("Element to be deleted not found!");
+                .withMessage("Pokémon to be deleted not found!");
         verify(mockingRepro, times(1)).findById(id);
         verify(mockingRepro, times(0)).deleteById(id);
         verifyNoMoreInteractions(mockingRepro);

@@ -36,15 +36,23 @@ public class CollectionService {
      *
      * @param id to search for
      * @return Pokémon
+     * @throws IdNotFound when not in database
      */
-    public Pokemon findFavorite(String id){
-        return repo.findById(id).orElse(null);
+    public Pokemon findFavorite(String id) throws IdNotFound {
+        Pokemon pokemon= repo.findById(id).orElse(null);
+
+        if (pokemon != null) {
+            return pokemon;
+        } else {
+            throw new IdNotFound("Searched Pokémon not found!");
+        }
     }
 
     /** Displays the favorite with the specified ID.
      *
      * @param id to search for
      * @return Pokémon
+     * @throws IdNotFound when not in database
      */
     public Pokemon removeFavorite(String id) throws IdNotFound {
         Pokemon pokemon= repo.findById(id).orElse(null);
@@ -52,7 +60,7 @@ public class CollectionService {
         if (pokemon != null) {
             repo.deleteById(id);
         } else {
-            throw new IdNotFound("Element to be deleted not found!");
+            throw new IdNotFound("Pokémon to be deleted not found!");
         }
         return pokemon;
     }
