@@ -2,6 +2,7 @@ package de.mreinisch.pokemonproject.controller;
 
 import de.mreinisch.pokemonproject.dto.FavoriteDTO;
 import de.mreinisch.pokemonproject.exception.IdNotFound;
+import de.mreinisch.pokemonproject.exception.NameNotFound;
 import de.mreinisch.pokemonproject.model.Pokemon;
 import de.mreinisch.pokemonproject.service.CollectionService;
 import de.mreinisch.pokemonproject.service.PokemonService;
@@ -28,7 +29,7 @@ public class PokeController {
     @GetMapping("/pokemon/{name}")
     public Pokemon getPokemonByName(@PathVariable
                                         @Size(min= 2, message= "The PokémonName must contain at least 2 characters.")
-                                        String name){
+                                        String name) throws NameNotFound {
         return pokeService.findPokeByName(name);
     }
 

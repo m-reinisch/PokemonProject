@@ -12,4 +12,10 @@ public class GlobalExceptionHandler {
     public String handleIdNotFoundException(IdNotFound ex){
         return "An error occurred during the operation to search by ID: " + ex.getLocalizedMessage();
     }
+
+    @ExceptionHandler(NameNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleNameNotFoundException(NameNotFound ex){
+        return "An error occurred during the search in PokémonAPI: " + ex.getLocalizedMessage();
+    }
 }
