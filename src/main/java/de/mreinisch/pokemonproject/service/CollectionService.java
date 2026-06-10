@@ -48,6 +48,9 @@ public class CollectionService {
     public Pokemon removeFavorite(String id){
         Pokemon pokemon= repo.findById(id).orElse(null);
 
+        if (pokemon != null) {
+            repo.deleteById(id);
+        }
         return pokemon;
     }
 
