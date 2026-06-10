@@ -1,8 +1,10 @@
 package de.mreinisch.pokemonproject.service;
 
 import de.mreinisch.pokemonproject.dto.PokeApiDTO;
+import de.mreinisch.pokemonproject.exception.NameNotFound;
 import de.mreinisch.pokemonproject.model.Pokemon;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +23,15 @@ public class PokemonService {
      *
      * @param name to search for
      * @return found Pokémon
+     * @throws NameNotFound when Pokémon not found
      */
-    public Pokemon findPokeByName(String name){
+    public Pokemon findPokeByName(String name) throws NameNotFound {
         PokeApiDTO pokeApiDTO= searchPokeAPIforName(name);
         List<String> types= new ArrayList<>();
 
         pokeApiDTO.types()
                 .forEach(t -> types.add(t.getType().getName()));
-        return new Pokemon("1",
+        return new Pokemon(null,
                 pokeApiDTO.id(),
                 null,
                 pokeApiDTO.name(),
@@ -44,11 +47,19 @@ public class PokemonService {
      *
      * @param name to search for
      * @return found Pokémon
+     * @throws NameNotFound when Pokémon not in API
      */
-    private PokeApiDTO searchPokeAPIforName(String name){
-        return restClient.get()
-                .uri("/" + name)
-                .retrieve()
-                .body(PokeApiDTO.class);
+    private PokeApiDTO searchPokeAPIforName(String name) throws NameNotFound {
+        PokeApiDTO apiDTO;
+
+        try {
+            apiDTO= restClient.get()
+                    .uri("/" + name)
+                    .retrieve()
+                    .body(PokeApiDTO.class);
+            return apiDTO;
+        } catch (HttpClientErrorException ex) {
+            throw new NameNotFound("Searched name: " + name + " not found!");
+        }
     }
 }

@@ -83,7 +83,7 @@ class PokeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                   {
-                    "id": "1",
+                    "id": null,
                     "pokemonId": "35",
                     "nickname": null,
                     "pokemonName": "clefairy",
