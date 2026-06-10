@@ -1,6 +1,7 @@
 package de.mreinisch.pokemonproject.service;
 
 import de.mreinisch.pokemonproject.dto.FavoriteDTO;
+import de.mreinisch.pokemonproject.exception.IdNotFound;
 import de.mreinisch.pokemonproject.model.Pokemon;
 import de.mreinisch.pokemonproject.repository.FavoritesRepo;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -86,25 +88,23 @@ class CollectionServiceTest {
     }
 
     @Test
-    void removeFavorite_shouldReturnNULL_whenNotFoundInDatabase() {
+    void removeFavorite_shouldReturnNULL_whenNotFoundInDatabase() throws IdNotFound {
         FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
         IdService mockingIdService= mock(IdService.class);
         RestClient.Builder restClientBuilder= RestClient.builder();
         CollectionService service= new CollectionService(restClientBuilder, mockingRepro, mockingIdService);
         String id= "1";
-        Pokemon expected= null;
-        Pokemon actual;
 
-        when(mockingRepro.findById(id)).thenReturn(Optional.empty());
-        actual= service.removeFavorite(id);
-        assertEquals(expected, actual);
+        assertThatExceptionOfType(IdNotFound.class)
+                .isThrownBy( () -> service.removeFavorite(id) )
+                .withMessage("Element to be deleted not found!");
         verify(mockingRepro, times(1)).findById(id);
         verify(mockingRepro, times(0)).deleteById(id);
         verifyNoMoreInteractions(mockingRepro);
     }
 
     @Test
-    void removeFavorite_shouldReturnPokemon_whenDeleted() {
+    void removeFavorite_shouldReturnPokemon_whenDeleted() throws IdNotFound {
         FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
         IdService mockingIdService= mock(IdService.class);
         RestClient.Builder restClientBuilder= RestClient.builder();
