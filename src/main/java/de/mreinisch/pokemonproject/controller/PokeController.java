@@ -1,6 +1,7 @@
 package de.mreinisch.pokemonproject.controller;
 
 import de.mreinisch.pokemonproject.dto.FavoriteDTO;
+import de.mreinisch.pokemonproject.exception.IdNotFound;
 import de.mreinisch.pokemonproject.model.Pokemon;
 import de.mreinisch.pokemonproject.service.CollectionService;
 import de.mreinisch.pokemonproject.service.PokemonService;
@@ -43,7 +44,12 @@ public class PokeController {
     }
 
     @GetMapping("/collection/{id}")
-    public Pokemon getFavoriteById(@PathVariable String id){
+    public Pokemon getFavoriteById(@PathVariable String id) throws IdNotFound {
         return favoriteService.findFavorite(id);
+    }
+
+    @DeleteMapping("/collection/{id}")
+    public Pokemon deleteFavorite(@PathVariable String id) throws IdNotFound {
+        return favoriteService.removeFavorite(id);
     }
 }
