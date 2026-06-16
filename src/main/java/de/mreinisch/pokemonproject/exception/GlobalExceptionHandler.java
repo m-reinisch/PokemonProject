@@ -1,5 +1,6 @@
 package de.mreinisch.pokemonproject.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,5 +18,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNameNotFoundException(NameNotFound ex){
         return "An error occurred during the search in PokémonAPI: " + ex.getLocalizedMessage();
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleConstraintViolationException(ConstraintViolationException ex) {
+        return ex.getMessage().substring(19);
     }
 }

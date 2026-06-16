@@ -2,9 +2,12 @@ package de.mreinisch.pokemonproject.service;
 
 import de.mreinisch.pokemonproject.dto.FavoriteDTO;
 import de.mreinisch.pokemonproject.exception.IdNotFound;
+import de.mreinisch.pokemonproject.exception.NameNotFound;
 import de.mreinisch.pokemonproject.model.Pokemon;
 import de.mreinisch.pokemonproject.repository.FavoritesRepo;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 import java.util.ArrayList;
@@ -15,6 +18,9 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 class CollectionServiceTest {
 
@@ -23,8 +29,6 @@ class CollectionServiceTest {
         FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
         IdService mockingIdService= mock(IdService.class);
         RestClient.Builder restClientBuilder= RestClient.builder();
-//        MockRestServiceServer mockRestServiceServer= MockRestServiceServer
-//                .bindTo(restClientBuilder).build();
         CollectionService service= new CollectionService(restClientBuilder, mockingRepro, mockingIdService);
         Pokemon pokemon= new Pokemon("1", "25", "Mein Starter", "pikachu",
                 "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
@@ -122,7 +126,7 @@ class CollectionServiceTest {
     }
 
     @Test
-    void generateFavorite_shouldReturnPokemon_whenSaved() {
+    void generateFavorite_shouldReturnPokemon_whenSaved() throws NameNotFound {
         FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
         IdService mockingIdService= mock(IdService.class);
         RestClient.Builder restClientBuilder= RestClient.builder();
@@ -140,5 +144,25 @@ class CollectionServiceTest {
         assertEquals(expected, actual);
         verify(mockingRepro, times(1)).save(expected);
         verifyNoMoreInteractions(mockingRepro);
+    }
+
+    @Test
+    void generateFavorite_shouldThrowException_whenNotFoundInDatabase(){
+        FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        RestClient.Builder restClientBuilder= RestClient.builder();
+        MockRestServiceServer mockRestServiceServer= MockRestServiceServer
+                .bindTo(restClientBuilder).build();
+        CollectionService service= new CollectionService(restClientBuilder, mockingRepro, mockingIdService);
+        String name= "clefair";
+        FavoriteDTO favorite= new FavoriteDTO(name, "Test");
+
+        mockRestServiceServer.expect(
+                        requestTo("https://pokeapi.co/api/v2/pokemon/clefair"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.NOT_FOUND));
+        assertThatExceptionOfType(NameNotFound.class)
+                .isThrownBy( () -> service.generateFavorite(favorite) )
+                .withMessage("Searched name: clefair not found!");
     }
 }

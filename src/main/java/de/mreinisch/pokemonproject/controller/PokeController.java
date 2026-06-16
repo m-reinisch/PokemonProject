@@ -35,7 +35,7 @@ public class PokeController {
 
     @PostMapping("/collection")
     @ResponseStatus(HttpStatus.CREATED)
-    public Pokemon savePokemonAsFavorite(@Valid @RequestBody FavoriteDTO favorite){
+    public Pokemon savePokemonAsFavorite(@Valid @RequestBody FavoriteDTO favorite) throws NameNotFound {
         return favoriteService.generateFavorite(favorite);
     }
 
