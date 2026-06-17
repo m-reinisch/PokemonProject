@@ -1,6 +1,7 @@
 package de.mreinisch.pokemonproject.service;
 
 import de.mreinisch.pokemonproject.dto.FavoriteDTO;
+import de.mreinisch.pokemonproject.dto.UpdateDTO;
 import de.mreinisch.pokemonproject.exception.IdNotFound;
 import de.mreinisch.pokemonproject.exception.NameNotFound;
 import de.mreinisch.pokemonproject.model.Pokemon;
@@ -164,5 +165,43 @@ class CollectionServiceTest {
         assertThatExceptionOfType(NameNotFound.class)
                 .isThrownBy( () -> service.generateFavorite(favorite) )
                 .withMessage("Searched name: clefair not found!");
+    }
+
+    @Test
+    void updateFavorite_shouldThrowException_whenNotFoundInDatabase() {
+        FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        RestClient.Builder restClientBuilder= RestClient.builder();
+        CollectionService service= new CollectionService(restClientBuilder, mockingRepro, mockingIdService);
+        String id= "1";
+        UpdateDTO nick= new UpdateDTO("Test");
+
+        assertThatExceptionOfType(IdNotFound.class)
+                .isThrownBy( () -> service.updateFavorite(id, nick) )
+                .withMessage("Searched Pokémon not found!");
+        verify(mockingRepro, times(1)).findById(id);
+        verifyNoMoreInteractions(mockingRepro);
+    }
+
+    @Test
+    void updateFavorite_shouldReturnPokemon_whenUpdated() throws IdNotFound {
+        FavoritesRepo mockingRepro= mock(FavoritesRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        RestClient.Builder restClientBuilder= RestClient.builder();
+        CollectionService service= new CollectionService(restClientBuilder, mockingRepro, mockingIdService);
+        String id= "1";
+        UpdateDTO nick= new UpdateDTO("Test Update");
+        Pokemon expected= new Pokemon(id, "25", nick.nickname(), "pikachu",
+                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+                4, 60, "electric".lines().toList());
+        Pokemon actual;
+
+        when(mockingRepro.findById(id)).thenReturn(Optional.of(expected));
+        when(mockingRepro.save(expected)).thenReturn(expected);
+        actual= service.updateFavorite(id,nick);
+        assertEquals(expected, actual);
+        verify(mockingRepro, times(1)).findById(id);
+        verify(mockingRepro, times(1)).save(expected);
+        verifyNoMoreInteractions(mockingRepro);
     }
 }

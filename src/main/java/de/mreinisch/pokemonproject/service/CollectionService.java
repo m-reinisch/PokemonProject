@@ -2,6 +2,7 @@ package de.mreinisch.pokemonproject.service;
 
 import de.mreinisch.pokemonproject.dto.FavoriteDTO;
 import de.mreinisch.pokemonproject.dto.PokeApiDTO;
+import de.mreinisch.pokemonproject.dto.UpdateDTO;
 import de.mreinisch.pokemonproject.exception.IdNotFound;
 import de.mreinisch.pokemonproject.exception.NameNotFound;
 import de.mreinisch.pokemonproject.model.Pokemon;
@@ -89,6 +90,21 @@ public class CollectionService {
                 types);
         repo.save(pokemon);
         return pokemon;
+    }
+
+    /** Changes the nickname of the desired Pokémon.
+     *
+     * @param id to search for
+     * @param newNickname to be saved
+     * @return  Pokémon
+     * @throws IdNotFound when not in database
+     */
+    public Pokemon updateFavorite(String id, UpdateDTO newNickname) throws IdNotFound {
+        Pokemon oldPokemon= findFavorite(id);
+        Pokemon newPokemon= null;
+
+        repo.save(newPokemon);
+        return newPokemon;
     }
 
     /** Searches for Pokémon by name in the PokeAPI.
