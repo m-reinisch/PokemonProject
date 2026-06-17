@@ -3,9 +3,11 @@ package de.mreinisch.pokemonproject.service;
 import de.mreinisch.pokemonproject.dto.FavoriteDTO;
 import de.mreinisch.pokemonproject.dto.PokeApiDTO;
 import de.mreinisch.pokemonproject.exception.IdNotFound;
+import de.mreinisch.pokemonproject.exception.NameNotFound;
 import de.mreinisch.pokemonproject.model.Pokemon;
 import de.mreinisch.pokemonproject.repository.FavoritesRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +72,7 @@ public class CollectionService {
      * @param favorite to save
      * @return saved favorite
      */
-    public Pokemon generateFavorite(FavoriteDTO favorite){
+    public Pokemon generateFavorite(FavoriteDTO favorite) throws NameNotFound {
         PokeApiDTO pokeApiDTO= searchPokeAPIforName(favorite.pokemonName());
         List<String> types= new ArrayList<>();
         Pokemon pokemon;
@@ -94,10 +96,17 @@ public class CollectionService {
      * @param name to search for
      * @return found Pokémon
      */
-    private PokeApiDTO searchPokeAPIforName(String name){
-        return restClient.get()
-                .uri("/" + name)
-                .retrieve()
-                .body(PokeApiDTO.class);
+    private PokeApiDTO searchPokeAPIforName(String name) throws NameNotFound {
+        PokeApiDTO apiDTO;
+
+        try {
+            apiDTO= restClient.get()
+                    .uri("/" + name)
+                    .retrieve()
+                    .body(PokeApiDTO.class);
+            return apiDTO;
+        } catch (HttpClientErrorException ex) {
+            throw new NameNotFound("Searched name: " + name + " not found!");
+        }
     }
 }
