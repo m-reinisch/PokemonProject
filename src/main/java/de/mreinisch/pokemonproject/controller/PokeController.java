@@ -28,8 +28,8 @@ public class PokeController {
 
     @GetMapping("/pokemon/{name}")
     public Pokemon getPokemonByName(@PathVariable
-                                        @Size(min= 2, message= "The PokémonName must contain at least 2 characters.")
-                                        String name) throws NameNotFound {
+                                    @Size(min= 2, message= "The PokémonName must contain at least 2 characters.")
+                                    String name) throws NameNotFound {
         return pokeService.findPokeByName(name);
     }
 
