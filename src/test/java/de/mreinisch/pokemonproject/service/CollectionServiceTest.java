@@ -201,6 +201,7 @@ class CollectionServiceTest {
         actual= service.updateFavorite(id,nick);
         assertEquals(expected, actual);
         verify(mockingRepro, times(1)).findById(id);
+        verify(mockingRepro, times(1)).deleteById(id);
         verify(mockingRepro, times(1)).save(expected);
         verifyNoMoreInteractions(mockingRepro);
     }

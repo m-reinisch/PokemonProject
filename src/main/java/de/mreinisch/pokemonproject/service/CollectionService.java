@@ -101,8 +101,17 @@ public class CollectionService {
      */
     public Pokemon updateFavorite(String id, UpdateDTO newNickname) throws IdNotFound {
         Pokemon oldPokemon= findFavorite(id);
-        Pokemon newPokemon= null;
+        Pokemon newPokemon;
 
+        newPokemon= new Pokemon(id,
+                                oldPokemon.pokemonId(),
+                                newNickname.nickname(),
+                                oldPokemon.pokemonName(),
+                                oldPokemon.pictureUrl(),
+                                oldPokemon.height(),
+                                oldPokemon.weight(),
+                                oldPokemon.types());
+        repo.deleteById(id);
         repo.save(newPokemon);
         return newPokemon;
     }
